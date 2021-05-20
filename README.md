@@ -1,5 +1,5 @@
-# Instagredients and Recipes :)™
-Instagredients and Recipes :)™ is a web application that allows a user to select ingredients and meal preferences which will result in a list of potential recipes matching the users criteria being generated. It will feature a front end UI, backend that handles searching for and pulling recipes, and a database.
+# Accessibot
+Accessibot will be a Discord bot that we build in order to cater to those who may have an impairment that prevents them from using Discord to it’s full extent. Current plans are to build a Discord bot that will use text-to-speech so that people that are mute will be able to have a voice in calls. We plan on extending this to other features for quality of life improvements and accommodations that make communication between two people hard. Accessibot will have its own website for documentation and suggestions or feedback to be sent through. 
 
 ## Installation
 
