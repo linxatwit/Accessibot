@@ -1,0 +1,42 @@
+.mx-auto {
+    margin: auto; 
+    max-width: 900px;
+    border-radius: 8px;
+    padding: 10px; 
+    align-items: center; 
+    justify-content: center; 
+    display: flex;
+    box-shadow: 0 0px 10px 0 lightslategray
+}
+
+input {
+    width: 100%; 
+    border-radius: 8px; 
+    border: 1px solid lightgray; 
+    height: 30px;
+}
+
+textarea {
+    width: 100%; 
+    border-radius: 8px; 
+    height: 200px; 
+    border: 1px solid lightgray
+}
+
+label {
+    display: block; 
+    font-size: 18px; 
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    letter-spacing: 0.5rem;
+}
+
+.btn-primary {
+    width: 100%;
+}
+
+.submit {
+    font-size: 18px;
+}

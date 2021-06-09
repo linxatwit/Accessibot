@@ -28,8 +28,29 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-<main role="main" class="container-fluid">
-  <p>feedback</p>
+<main role="main" class="mx-auto">
+  <div class="card" id="card">
+    <form action="/feedback" method="post">
+      <section style="text-align: center;">
+        <h1>Accessibot</h1>
+        <h4>Leave us your feedback below!</h4>
+      </section>
+      <br style="clear: both;">
+      <section>
+        <label>Discord Tag:</label>
+        <input type="text" id="discordTag">
+      </section>
+      <br style="clear: both;">
+      <section>
+        <label>Feedback:</label>
+        <textarea></textarea>
+      </section>
+      <br style="clear: both;">
+      <section style="text-align: center;">
+        <button class="btn btn-primary" style="margin-bottom: 10px"><span class="submit">Submit</span></button>
+      </section>
+    </form>
+  </div>
 </main>
 
 {% endblock %}
