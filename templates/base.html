@@ -23,10 +23,14 @@
 
 </head>
 
-<body class="body">
-  <!-- Body content -->
-  {% block content %}{% endblock %}
+<body>
+  <div id="page-container">
+    <div id="content-wrap">
+      <!-- Body content -->
+      {% block content %}{% endblock %}
+    </div>
 
+  </div>
   <!-- Footer as it should be  -->
   <footer class="footer" id="footer">
       <div class="container">

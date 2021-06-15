@@ -14,13 +14,15 @@ input {
     border-radius: 8px; 
     border: 1px solid lightgray; 
     height: 30px;
+    outline: none;
 }
 
 textarea {
     width: 100%; 
     border-radius: 8px; 
     height: 200px; 
-    border: 1px solid lightgray
+    border: 1px solid lightgray;
+    outline: none;
 }
 
 label {
@@ -39,4 +41,13 @@ h1 {
 
 .submit {
     font-size: 18px;
+}
+
+.categories {
+    display: block;
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid lightgray;
+    outline: none;
 }
