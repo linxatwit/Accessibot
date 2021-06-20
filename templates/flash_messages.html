@@ -1,0 +1,11 @@
+{% with messages = get_flashed_messages(category_filter=['success']) %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">×</span>
+
+</div>
+{% endfor %}
+{% endif%}
+{% endwith %}
