@@ -143,11 +143,12 @@ function userSpeaking(voiceConnection, msg) {
 // https://discordjs.guide/voice/receiving-audio.html
 // https://discord.js.org/#/docs/main/stable/typedef/ReceiveStreamOptions
 // https://nodejs.org/api/stream.html#stream_readable_read_size_1
+// Silence Frame -> node_modules/discord.js/src/client/voice/util/Silence.js
 // By default, audio stream is undefined/ empty, so we need to play something
-const dataChunk = Buffer.from([0x00]);
+const SILENCE_FRAME = Buffer.from([0xf8, 0xff, 0xfe]);
 class Silence extends Readable {
   _read() {
-    this.push(dataChunk);
+    this.push(SILENCE_FRAME);
     this.destroy();
   }
 }
