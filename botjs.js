@@ -124,7 +124,7 @@ function userSpeaking(voiceConnection, msg) {
     // While user still speaking, input audio frame data into buffer
     let buffer = [];
     audioStream.on('data', (data) => {
-        buffer.push(data);
+      buffer.push(data);
     })
     // When user stops speaking, create new buffer, reformat audio, transcribe audio
     audioStream.on('end', async() => {
@@ -173,14 +173,14 @@ async function convertAudio(buffer) {
 // https://www.npmjs.com/package/node-witai-speech
 async function transcribeAudio(buffer) {
     try {
-        // promisify: promise chaining + async/await with callback-based APIs
-        const speechIntent = Util.promisify(WitSpeech.extractSpeechIntent);
-        var audioStream = Readable.from(buffer);
-        const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
-        // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
-        const obj = await speechIntent(process.env['WITAI_TOKEN'], audioStream, audioStreamSettings);
-        audioStream.destroy();
-        return obj.text;
+      // promisify: promise chaining + async/await with callback-based APIs
+      const speechIntent = Util.promisify(WitSpeech.extractSpeechIntent);
+      var audioStream = Readable.from(buffer);
+      const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
+      // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
+      const obj = await speechIntent(process.env['WITAI_TOKEN'], audioStream, audioStreamSettings);
+      audioStream.destroy();
+      return obj.text;
     } catch (e) { 
       console.log("transcribeAudio Error: " + e);
     }
