@@ -37,6 +37,10 @@
 {% endblock %}
 
 <script>
+// Fixing 100vh for mobile
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty(’–vh’, ${vh}px);
+
 $(function() {
   $(".nav li").on("click", function() {
     $(".nav li").removeClass("active");
