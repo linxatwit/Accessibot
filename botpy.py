@@ -78,19 +78,24 @@ async def on_message(message):
 
         # convert text to mp3 file
         tts = gTTS(message.content[5:], lang='en')
-        tts.save("temp.mp3")
+        tts.save("input.mp3")
+        # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
+        # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
+        # The audio stream can be Opus encoded or not, however if the audio stream is not Opus encoded then the audio format must be 16-bit 48KHz stereo PCM.
+        os.system('ffmpeg -y  -i input.mp3  -acodec pcm_s16le -f s16le -ac 1 -ar 48000 output.pcm')
 
         # using ffmpeg, play mp3 file
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          voiceConnection.play(discord.FFmpegPCMAudio(executable="./ffmpeg/ffmpeg.exe", source="./temp.mp3"))
+          voiceConnection.play("output.pcm")
           # wait until finish playing to delete
           while voiceConnection.is_playing():
             await asyncio.sleep(1)
         
         # remove mp3 file
-        os.remove("temp.mp3")
+        os.remove("ipnut.mp3")
+        os.remove("output.pcm")
               
     if message.content.startswith("!leave"):
       serverBotInfo.pop("voice_channel")
