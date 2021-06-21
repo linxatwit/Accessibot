@@ -7,6 +7,8 @@ from gtts import gTTS
 import asyncio
 import os
 import random
+from app import keep_alive
+
 
 client = discord.Client()
 
@@ -58,7 +60,9 @@ async def on_message(message):
 
     if message.content.startswith("!tts"):
       # bot hasn't joined any voice channels and you haven't joined any either
-      if message.author.voice == None and "voice_channel" not in serverBotInfo:
+      if message.content == "!tts": 
+        await message.reply("You haven't put any text! Try !tts hello world")
+      elif message.author.voice == None and "voice_channel" not in serverBotInfo:
         await message.reply("I'm not in a voice channel yet! Try joining one and try again!")
       else:
         # connect to your voice channel if not in one
@@ -98,4 +102,5 @@ async def on_message(message):
     print("message Error: ", e)
     await message.reply("Bro cmon, what is this error")
 
+keep_alive()
 client.run(os.environ['DISCORD_TOKEN'])

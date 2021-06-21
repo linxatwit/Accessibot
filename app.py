@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, flash
 from flask_mail import Mail, Message
+from threading import Thread
 import random
 
 app = Flask(__name__)
+
+app.config['ENV'] = 'dev'
+app.config['DEBUG'] = True
 
 # gmail configurations
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -75,10 +79,20 @@ def page_not_found(e):
 def page_not_found(e):
 	return render_template("500.html"), 500
 
-if __name__ == '__main__':
-  app.config['ENV'] = 'dev'  
-  app.config['DEBUG'] = True
+def run():
   app.run(threaded=True# Starts the site
 		#host='0.0.0.0',  # EStablishes the host, required for replit to detect the site
 		#port=random.randint(2000, 9000)  # Randomly select the port the machine hosts on.
 	)
+
+def keep_alive():
+  t = Thread(target=run)
+  t.start()
+
+#if __name__ == '__main__':
+#  app.config['ENV'] = 'dev'  
+#  app.config['DEBUG'] = True
+#  app.run(threaded=True# Starts the site
+#		#host='0.0.0.0',  # EStablishes the host, required for replit to detect the site
+#		#port=random.randint(2000, 9000)  # Randomly select the port the machine hosts on.
+#	)
