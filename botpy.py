@@ -100,4 +100,4 @@ async def on_message(message):
     print("message Error: ", e)
     await message.reply("Bro cmon, what is this error")
 
-client.run(os.environ['DISCORD_TOKEN'])
+client.run(os.getenv('DISCORD_TOKEN'))
