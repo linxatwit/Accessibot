@@ -88,7 +88,7 @@ async def on_message(message):
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          voiceConnection.play("output.pcm")
+          voiceConnection.play("./output.pcm")
           # wait until finish playing to delete
           while voiceConnection.is_playing():
             await asyncio.sleep(1)
