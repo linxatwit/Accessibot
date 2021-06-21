@@ -57,34 +57,38 @@ async def on_message(message):
 
 
     if message.content.startswith("!tts"):
-      # connect to your voice channel if not in one
-      if "voice_channel" not in serverBotInfo:
-        voiceConnection = await message.author.voice.channel.connect()
-        serverBotInfo["voice_channel"] = message.author.voice.channel
-      # if you are in another voice channel, go to it
-      elif "voice_channel" in serverBotInfo and serverBotInfo.get("voice_channel") != message.author.voice.channel:
-        await message.author.guild.voice_client.disconnect()
-        voiceConnection = await message.author.voice.channel.connect()
-        serverBotInfo["voice_channel"] = message.author.voice.channel
-      # if you are in the same voice channel, continue
+      # bot hasn't joined any voice channels and you haven't joined any either
+      if message.author.voice == None and "voice_channel" not in serverBotInfo:
+        await message.reply("I'm not in a voice channel yet! Try joining one and try again!")
       else:
-        voiceConnection = message.author.guild.voice_client
+        # connect to your voice channel if not in one
+        if "voice_channel" not in serverBotInfo:
+          voiceConnection = await message.author.voice.channel.connect()
+          serverBotInfo["voice_channel"] = message.author.voice.channel
+        # if you are in another voice channel (not in a text chanenl), go to it
+        elif "voice_channel" in serverBotInfo and message.author.voice != None:
+          await message.author.guild.voice_client.disconnect()
+          voiceConnection = await message.author.voice.channel.connect()
+          serverBotInfo["voice_channel"] = message.author.voice.channel
+        # if you are in the same voice channel or the bot is in a voice channel, you are not connected to any and you use !tts in a text channel, continue
+        else:
+          voiceConnection = message.author.guild.voice_client
 
-      # convert text to mp3 file
-      tts = gTTS(message.content[5:], lang='en')
-      tts.save("temp.mp3")
+        # convert text to mp3 file
+        tts = gTTS(message.content[5:], lang='en')
+        tts.save("temp.mp3")
 
-      # using ffmpeg, play mp3 file
-      # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
-      # use exe file shown below with file path + mp3 source
-      if not voiceConnection.is_playing():
-        voiceConnection.play(discord.FFmpegPCMAudio(executable="./ffmpeg/ffmpeg.exe", source="./temp.mp3"))
-        # wait until finish playing to delete
-        while voiceConnection.is_playing():
-          await asyncio.sleep(1)
-      
-      # remove mp3 file
-      os.remove("temp.mp3")
+        # using ffmpeg, play mp3 file
+        # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
+        # use exe file shown below with file path + mp3 source
+        if not voiceConnection.is_playing():
+          voiceConnection.play(discord.FFmpegPCMAudio(executable="./ffmpeg/ffmpeg.exe", source="./temp.mp3"))
+          # wait until finish playing to delete
+          while voiceConnection.is_playing():
+            await asyncio.sleep(1)
+        
+        # remove mp3 file
+        os.remove("temp.mp3")
               
     if message.content.startswith("!leave"):
       serverBotInfo.pop("voice_channel")
