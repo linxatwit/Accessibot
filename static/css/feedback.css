@@ -1,12 +1,12 @@
 .mx-auto {
-    margin: auto; 
-    max-width: 900px;
+    margin: 20px auto; 
     border-radius: 8px;
     padding: 10px; 
     align-items: center; 
     justify-content: center; 
     display: flex;
-    box-shadow: 0 0px 10px 0 lightslategray
+    box-shadow: 0 0px 10px 0 lightslategray;
+    min-width: 75%;
 }
 
 input {
