@@ -7,8 +7,6 @@ from gtts import gTTS
 import asyncio
 import os
 import random
-from app import keep_alive
-
 
 client = discord.Client()
 
@@ -102,5 +100,4 @@ async def on_message(message):
     print("message Error: ", e)
     await message.reply("Bro cmon, what is this error")
 
-keep_alive()
 client.run(os.environ['DISCORD_TOKEN'])
