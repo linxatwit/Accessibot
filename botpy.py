@@ -94,7 +94,7 @@ async def on_message(message):
             await asyncio.sleep(1)
         
         # remove mp3 file
-        os.remove("ipnut.mp3")
+        os.remove("input.mp3")
         # os.remove("output.pcm")
               
     if message.content.startswith("!leave"):
