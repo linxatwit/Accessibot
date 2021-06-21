@@ -1,2 +1,6 @@
-python-3.8.10
-
+git+https://github.com/Rapptz/discord.py
+discord.py[voice]
+PyNaCl==1.4.0
+gTTS==2.2.3
+dnspython==1.16.0
+async-timeout==3.0.1
