@@ -67,6 +67,14 @@ def feedback():
 
   return render_template('feedback.html')
 
+@app.errorhandler(404)
+def page_not_found(e):
+  return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+	return render_template("500.html"), 500
+
 if __name__ == '__main__':
   app.config['ENV'] = 'dev'  
   app.config['DEBUG'] = True
