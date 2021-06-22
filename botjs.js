@@ -124,14 +124,14 @@ function userSpeaking(voiceConnection, msg) {
     // While user still speaking, input audio frame data into buffer
     let buffer = [];
     audioStream.on('data', (data) => {
-      buffer.push(data);
+        buffer.push(data);
     })
     // When user stops speaking, create new buffer, reformat audio, transcribe audio
     audioStream.on('end', async() => {
       buffer = Buffer.concat(buffer);
       let newBuffer = await convertAudio(buffer);
       let transcription = await transcribeAudio(newBuffer);
-      if (typeof transcription != "undefined") {
+      if (typeof transcription == "string") {
         msg.channel.send(user.username + ": " + transcription);
       } else {
         console.log(transcription);
@@ -171,15 +171,31 @@ async function convertAudio(buffer) {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 // https://www.npmjs.com/package/node-witai-speech
+let lastSpeechIntentCall = null;
 async function transcribeAudio(buffer) {
     try {
+      // no more than 1 call a second
+      if (lastSpeechIntentCall != null) {
+        let now = Math.floor(new Date());    
+        while (now - lastSpeechIntentCall < 1000) {
+          await sleep(100);
+          now = Math.floor(new Date());
+        }
+      }
       // promisify: promise chaining + async/await with callback-based APIs
       const speechIntent = Util.promisify(WitSpeech.extractSpeechIntent);
       var audioStream = Readable.from(buffer);
       const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
       // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
-      const obj = await speechIntent(process.env['WITAI_TOKEN'], audioStream, audioStreamSettings);
+      const obj = await speechIntent(prcoess.get_env.WITAI_TOKEN, audioStream, audioStreamSettings);
+      lastSpeechIntentCall = Math.floor(new Date());
       audioStream.destroy();
       return obj.text;
     } catch (e) { 
@@ -187,6 +203,6 @@ async function transcribeAudio(buffer) {
     }
 }
 
-client.login(process.env['DISCORD_TOKEN']);
+client.login(process.get_env.DISCORD_TOKEN);
 
 
