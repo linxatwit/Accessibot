@@ -104,11 +104,14 @@ async def on_message(message):
       await message.reply("I turned on tts for this channel!")
 
     if message.content.startswith(",tts off"):
-      serverBotInfo.pop("tts_text_channel")
-      await message.reply("I turned off tts!")
-      if message.author.guild.voice_client != None:
-        serverBotInfo.pop("voice_channel")
-        await message.author.guild.voice_client.disconnect()
+      if serverBotInfo.get("tts_text_channel") == None:
+        await message.reply("No text channel has tts enabled!")
+      else:
+        serverBotInfo.pop("tts_text_channel")
+        await message.reply("I turned off tts!")
+        if message.author.guild.voice_client != None:
+          serverBotInfo.pop("voice_channel")
+          await message.author.guild.voice_client.disconnect()
     
     if message.content.startswith(",tts current"):
       if serverBotInfo.get("tts_text_channel") == None:
