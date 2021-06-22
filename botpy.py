@@ -25,8 +25,14 @@ async def on_message(message):
     if message.content.startswith('$hello'):
       await message.channel.send('Hello!')
 
-    # e.g. !rps rock, !rps paper, !rps scissors
-    if message.content.startswith('!rps'):
+    helpCommands = ['!help', '*help']
+    if message.content in helpCommands:
+      await message.reply('Try ,help')
+    if message.content.startswith(',help'):
+      await message.channel.send('Text-to-Speech\n,tts {on off current}')
+
+    # e.g. ,rps rock, ,rps paper, ,rps scissors
+    if message.content.startswith(',rps'):
       choices = ['rock', 'paper', 'scissors']
       botChoice = random.choice(choices)
       userChoice = message.content.split(" ")[1]
@@ -54,13 +60,9 @@ async def on_message(message):
       else:
         await message.reply("Yo, its !rps rock, !rps paper, or !rps scissors? Get with the program. Get it? Program? I'm a robo t beep ha beep ha!")
 
-
-
-    if message.content.startswith("!tts"):
+    if serverBotInfo.get("tts_text_channel") != None and serverBotInfo.get("tts_text_channel") == message.channel.name and not message.content.startswith(','):
       # bot hasn't joined any voice channels and you haven't joined any either
-      if message.content == "!tts": 
-        await message.reply("You haven't put any text! Try !tts hello world")
-      elif message.author.voice == None and "voice_channel" not in serverBotInfo:
+      if message.author.voice == None and "voice_channel" not in serverBotInfo:
         await message.reply("I'm not in a voice channel yet! Try joining one and try again!")
       else:
         # connect to your voice channel if not in one
@@ -68,7 +70,7 @@ async def on_message(message):
           voiceConnection = await message.author.voice.channel.connect()
           serverBotInfo["voice_channel"] = message.author.voice.channel
         # if you are in another voice channel (not in a text chanenl), go to it
-        elif "voice_channel" in serverBotInfo and message.author.voice != None:
+        elif "voice_channel" in serverBotInfo and message.author.voice != None and serverBotInfo.get("voice_channel") != message.author.voice.channel:
           await message.author.guild.voice_client.disconnect()
           voiceConnection = await message.author.voice.channel.connect()
           serverBotInfo["voice_channel"] = message.author.voice.channel
@@ -77,7 +79,7 @@ async def on_message(message):
           voiceConnection = message.author.guild.voice_client
 
         # convert text to mp3 file
-        tts = gTTS(message.content[5:], lang='en')
+        tts = gTTS(message.content, lang='en')
         tts.save("input.mp3")
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
@@ -97,9 +99,22 @@ async def on_message(message):
         os.remove("input.mp3")
         # os.remove("output.pcm")
               
-    if message.content.startswith("!leave"):
-      serverBotInfo.pop("voice_channel")
-      await message.author.guild.voice_client.disconnect()
+    if message.content.startswith(",tts on"):
+      serverBotInfo["tts_text_channel"] = message.channel.name
+      await message.reply("I turned on tts for this channel!")
+
+    if message.content.startswith(",tts off"):
+      serverBotInfo.pop("tts_text_channel")
+      await message.reply("I turned off tts!")
+      if message.author.guild.voice_client != None:
+        serverBotInfo.pop("voice_channel")
+        await message.author.guild.voice_client.disconnect()
+    
+    if message.content.startswith(",tts current"):
+      if serverBotInfo.get("tts_text_channel") == None:
+        await message.reply("No text channel has tts enabled!")
+      else:
+        await message.reply(serverBotInfo.get("tts_text_channel") + " has tts enabled!")
 
   except Exception as e:
     print("message Error: ", e)
