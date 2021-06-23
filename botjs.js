@@ -178,6 +178,8 @@ function sleep(ms) {
 }
 
 // https://www.npmjs.com/package/node-witai-speech
+// https://wit.ai/docs/
+// https://github.com/wit-ai/pywit
 let lastSpeechIntentCall = null;
 async function transcribeAudio(buffer) {
     try {
@@ -194,7 +196,7 @@ async function transcribeAudio(buffer) {
       var audioStream = Readable.from(buffer);
       const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
       // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
-      const obj = await speechIntent(prcoess.get_env.WITAI_TOKEN, audioStream, audioStreamSettings);
+      const obj = await speechIntent(process.get_env.WITAI_TOKEN, audioStream, audioStreamSettings);
       lastSpeechIntentCall = Math.floor(new Date());
       audioStream.destroy();
       return obj.text;
