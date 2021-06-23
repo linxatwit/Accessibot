@@ -8,6 +8,7 @@
 // npm install stream
 
 const Discord = require('discord.js');
+const opus = require('@discordjs/opus');
 const WitSpeech = require('node-witai-speech');
 const Util = require('util');
 const { Readable } = require('stream');
