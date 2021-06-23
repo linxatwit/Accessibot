@@ -197,7 +197,7 @@ async function transcribeAudio(buffer) {
       var audioStream = Readable.from(buffer);
       const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
       // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
-      const obj = await speechIntent(process.get_env.WITAI_TOKEN, audioStream, audioStreamSettings);
+      const obj = await speechIntent(process.env.WITAI_TOKEN, audioStream, audioStreamSettings);
       lastSpeechIntentCall = Math.floor(new Date());
       audioStream.destroy();
       return obj.text;
@@ -206,6 +206,5 @@ async function transcribeAudio(buffer) {
     }
 }
 
-client.login(process.get_env.DISCORD_TOKEN);
-
+client.login(process.env.DISCORD_TOKEN);
 
