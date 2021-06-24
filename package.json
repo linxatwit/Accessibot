@@ -1,0 +1,29 @@
+{
+  "name": "accessibot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "botjs.js",
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "discord.js": "^12.5.3",
+    "node-witai-speech": "^1.0.2",
+    "request": "^2.88.2",
+    "stream": "^0.0.2",
+    "underscore": "^1.13.1",
+    "util": "^0.12.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linxatwit/Accessibot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linxatwit/Accessibot/issues"
+  },
+  "homepage": "https://github.com/linxatwit/Accessibot#readme"
+}
