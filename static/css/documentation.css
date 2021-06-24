@@ -1,5 +1,7 @@
 .section {
     display: block;
+    word-wrap: break-word;
+    width: fit-content;
 }
 
 ul, p {

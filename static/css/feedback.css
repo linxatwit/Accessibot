@@ -6,7 +6,7 @@
     justify-content: center; 
     display: flex;
     box-shadow: 0 0px 10px 0 lightslategray;
-    min-width: 75%;
+    min-width: 50%;
 }
 
 input {
@@ -49,4 +49,10 @@ h1 {
     border-radius: 8px;
     border: 1px solid lightgray;
     outline: none;
+}
+
+.description {
+    letter-spacing: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
 }
