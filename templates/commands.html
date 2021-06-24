@@ -29,7 +29,29 @@
 </nav>
 
 <main role="main" class="container-fluid">
-  <p>commands</p>
+  <div class="bodywrapper" style="margin: 40px auto 0 auto; width: 700px">
+    <div class="section">
+      <h1 style="font-weight: bold; letter-spacing: 0rem;">Commands</h1>
+      <p>List of commands for Accessibot.</p>
+    </div>
+    <div class="section">
+      <ul>
+        <li style="font-weight: bold;">,tts on</li>
+        <ul class="nested">
+          <li>Join a voice channel and type this command in a text channel to enable tts in it.</li>
+          <li>Any messages typed will be converted to speech in a voice channel you are connected to.</li>
+        </ul>
+        <li style="font-weight: bold;">,tts off</li>
+        <ul class="nested">
+          <li>Type this command to disable tts in the text channel tts is enabled in.</li>
+        </ul>
+        <li style="font-weight: bold;">,tts current</li>
+        <ul class="nested">
+          <li>This command tells you which channel tts is enabled in.</li>
+        </ul>
+      </ul>
+    </div>
+  </div>
 </main>
 
 {% endblock %}
