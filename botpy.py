@@ -79,7 +79,7 @@ async def on_message(message):
           voiceConnection = message.author.guild.voice_client
 
         # convert text to mp3 file
-        if serverBotInfo.get("language") != None:
+        if serverBotInfo.get("language") == None:
           tts = gTTS(message.content, lang='en')
         else:
           tts = gTTS(message.content, lang=serverBotInfo.get("language"))
