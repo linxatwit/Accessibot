@@ -16,7 +16,7 @@ async def on_ready():
 
 
 serverBotInfo = dict()
-serverBotInfo["slow"] = False
+slow = False
 @client.event
 async def on_message(message):
   try:
@@ -81,9 +81,9 @@ async def on_message(message):
 
         # convert text to mp3 file
         if serverBotInfo.get("accent") == None:
-          tts = gTTS(message.content, lang='en', slow=serverBotInfo.get("slow"))
+          tts = gTTS(message.content, lang='en', slow=slow)
         else:
-          tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=serverBotInfo.get("slow"))
+          tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=slow)
         tts.save("input.mp3")
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
@@ -130,10 +130,10 @@ async def on_message(message):
     if message.content.startswith(",slow"):
       if message.content.split(" ")[1] == "on":
         serverBotInfo["slow"] = True
-        await message.reply("I have set slow speak mode to" + serverBotInfo.get("slow") + "!")
+        await message.reply("I have set slow speak mode to" + slow + "!")
       else:
         serverBotInfo["slow"] = False
-        await message.reply("I have set slow speak mode to" + serverBotInfo.get("slow") + "!")
+        await message.reply("I have set slow speak mode to" + slow + "!")
 
   except Exception as e:
     print("message Error: ", e)
