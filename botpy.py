@@ -79,7 +79,10 @@ async def on_message(message):
           voiceConnection = message.author.guild.voice_client
 
         # convert text to mp3 file
-        tts = gTTS(message.content, lang='en')
+        if serverBotInfo.get("language") != None:
+          tts = gTTS(message.content, lang='en')
+        else:
+          tts = gTTS(message.content, lang=serverBotInfo.get("language"))
         tts.save("input.mp3")
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
@@ -118,6 +121,10 @@ async def on_message(message):
         await message.reply("No text channel has tts enabled!")
       else:
         await message.reply(serverBotInfo.get("tts_text_channel") + " has tts enabled!")
+
+    if message.content.startswith(",lang"):
+      serverBotInfo["language"] = message.content.split(" ")[1]
+      await message.reply("I have set the speaker language to " + serverBotInfo.get("language") + "!")
 
   except Exception as e:
     print("message Error: ", e)
