@@ -183,9 +183,12 @@ function sleep(ms) {
 // https://github.com/wit-ai/pywit
 const config = {
   "DISCORD_TOKEN": process.env.DISCORD_TOKEN,
-  "WITAI_TOKENS": process.env.WITAI_TOKEN
+  "WITAI_TOKENS": [process.env.WITAI_TOKEN_1, process.env.WITAI_TOKEN_2, process.env.WITAI_TOKEN_3,
+                    process.env.WITAI_TOKEN_4, process.env.WITAI_TOKEN_5, process.env.WITAI_TOKEN_6,
+                    process.env.WITAI_TOKEN_7, process.env.WITAI_TOKEN_8, process.env.WITAI_TOKEN_9,
+                    process.env.WITAI_TOKEN_10]
 }
-
+let lastWITAIToken = 0;
 async function transcribeAudio(buffer) {
     try {
       // promisify: promise chaining + async/await with callback-based APIs
@@ -193,7 +196,7 @@ async function transcribeAudio(buffer) {
       var audioStream = Readable.from(buffer);
       const audioStreamSettings = "audio/raw;encoding=signed-integer;bits=16;rate=48k;endian=little";
       // from wit.ai app: obj: { entities: {}, intents: [], text: "__", traits {} }
-      const obj = await speechIntent(config.WITAI_TOKENS, audioStream, audioStreamSettings);
+      const obj = await speechIntent(config.WITAI_TOKENS[lastWITAIToken++%config.WITAI_TOKENS.length], audioStream, audioStreamSettings);
       lastSpeechIntentCall = Math.floor(new Date());
       audioStream.destroy();
       return obj.text;
