@@ -84,11 +84,20 @@ client.on('message', async (msg) => {
     if (msg.content == '!join') {
       try {
         serverBotInfo.set('voiceChannel', msg.member.voice.channelID);
+        serverBotInfo.set('audioReceiving', true);
         await connect(msg);
         msg.reply('Join!');
       } catch (e) {
         msg.reply("You're not in a voice channel!");
       }
+    }
+    if (msg.content == '!pause') {
+      serverBotInfo.set('audioReceiving', false);
+      msg.reply("It's paused!");
+    }
+    if (msg.content == "!resume") {
+      serverBotInfo.set('audioReceiving', true);
+      msg.reply("I'm listening again!");
     }
     if (msg.content == '!leave') {
       try {
@@ -117,7 +126,7 @@ async function connect(msg) {
 function userSpeaking(voiceConnection, msg) {
   voiceConnection.on('speaking', async(user, speaking) => {
     // When user is not speaking or is the bot, do not do anything
-    if (user.bot || speaking.bitfield == 0) {
+    if (user.bot || speaking.bitfield == 0 || !serverBotInfo.get('audioReceiving')) {
       return;
     }
     // When user starts speaking, create audio stream, pcm formatted wav file
@@ -170,12 +179,6 @@ async function convertAudio(buffer) {
   } catch (e) {
     console.log("convertAudio Error: " + e);
   }
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
 }
 
 // https://www.npmjs.com/package/node-witai-speech
