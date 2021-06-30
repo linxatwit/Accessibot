@@ -86,8 +86,31 @@ client.on('message', async (msg) => {
     }
 
     if (msg.content == '!help') {
-      msg.reply('**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
+      msg.reply('\n**!text** - list of #text-channel clickable buttons that will move you to that channel\n**!voice** - list of #voice-channel clickable buttons that will move you to that channel\n\n**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
     }
+
+    // https://discordjs.guide/popular-topics/permissions.html#roles-as-bot-permissions
+    // https://discord.js.org/#/docs/main/stable/class/GuildChannelManager
+    if (msg.content == '!text') {
+      let textChannelList = []
+      msg.guild.channels.cache.forEach(channel => {
+        if (channel.type == 'text') {
+          textChannelList.push('<#' + channel.id + '>');
+        }
+      });
+      msg.reply('Click any #text-channel to the right to move to it! ' + textChannelList.join(' '));
+    }
+
+    if (msg.content == '!voice') {
+      let voiceChannelList = []
+      msg.guild.channels.cache.forEach(channel => {
+        if (channel.type == 'voice') {
+          voiceChannelList.push('<#' + channel.id + '>');
+        }
+      });
+      msg.reply('Click any #voice-channel to the right to move to it!' + voiceChannelList.join(' '));
+    }
+
 
     // https://nodejs.dev/learn/making-http-requests-with-nodejs
     // https://wit.ai/docs/http/20200513/#get__apps_link
