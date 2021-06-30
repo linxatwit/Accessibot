@@ -12,11 +12,13 @@ const opus = require('@discordjs/opus');
 const WitSpeech = require('node-witai-speech');
 const Util = require('util');
 const { Readable } = require('stream');
+const https = require('https');
 
 const client = new Discord.Client();
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  getWITAIAppList(appList => {appList});
 });
 
 // Map for storing bot information e.g. voice channel ID that I am connected to, will need to disconnect later
@@ -24,6 +26,8 @@ client.on('ready', () => {
 //    serverBotInfo.get(guild.id).get(__) -> then the usual information e.g. current voice channel ID or serverBotInfo.get(guild.id).get('voiceChannel)
 // So if you connect to a voice channel on one server, and type !leave on another, it will leave on the first server AHAHAH
 var serverBotInfo = new Map();
+const sttLanguages = ['ar','bn','my','ca','zh','nl','en','fi','fr','de','hi','id','it','ja','kn','ko','ms','ml','mr','pl','pt','ru','si','es','sv','tl','ta','te','th','tr','ur','vi'];
+
 client.on('message', async (msg) => {
   try {
     if (msg.content == 'ping') {
@@ -81,23 +85,69 @@ client.on('message', async (msg) => {
       }
     }
 
+    if (msg.content == '!help') {
+      msg.reply('**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
+    }
+
+    // https://nodejs.dev/learn/making-http-requests-with-nodejs
+    // https://wit.ai/docs/http/20200513/#get__apps_link
+    // https://nodejs.org/api/https.html
+    // https://wit.ai/faq -> langs supported for speech recognition
+    if (msg.content.startsWith('!lang')) {
+      try {
+        let lang = msg.content.split(' ')[1].toLowerCase();      
+
+        if (lang == 'current') {
+          msg.reply('Current STT language setting: ' + serverBotInfo.get('sttLang') + '. Type !lang list for available language codes.');
+        } else if (lang == 'list' || (!sttLanguages.includes(lang) && lang != 'current')) {
+          msg.reply('We currently support speech recognition for:\nArabic (ar)\nBengali (bn), Burmese (my)\nCatalan (ca), Chinese (zh)\nDutch (nl)\nEnglish (en)\nFinnish (fi), French (fr)\nGerman (de)\nHindi (hi)\nIndonesian (id), Italian(it)\nJapanese (ja)\nKannada (kn), Korean (ko)\nMalay (ms), Malayalam (ml), Marathi (mr)\nPolish (pl), Portuguese (pt)\nRussian (ru)\nSinhalese (si), Spanish (es), Swedish (sv)\nTagalog (tl), Tamil (ta), Telugu (te), Thai (th), Turkish (tr)\nUrdu (ur)\nVietnamese (vi)');
+          msg.reply('Example usage: English "!lang en", Spanish "!lang es", Korean "!lang ko"');
+        } else {
+          getWITAIAppList(appList => {
+            let appMap = appList.reduce(function(map, obj) {
+              map[obj.name] = obj.id;
+              return map;
+            }, {});
+            for (let i = 0; i < config.WITAI_TOKENS.length; i++) {
+              updateWITAIAppLanguage(appMap['sst' + (i+1)], config.WITAI_TOKENS[i], lang, appData => {
+                console.log(appData);
+              });
+            }
+          });
+          serverBotInfo.set('sttLang', lang);
+          msg.reply('Successfully STT language setting to: ' + serverBotInfo.get('sttLang'));
+        }
+      } catch (e) {
+        console.log("!lang Error :" + e);
+      }
+    }
+
+
     if (msg.content == '!join') {
       try {
         serverBotInfo.set('voiceChannel', msg.member.voice.channelID);
         serverBotInfo.set('audioReceiving', true);
         await connect(msg);
-        msg.reply('Join!');
+        msg.reply('I am listening! Current language setting: ' + serverBotInfo.get('sttLang'));
       } catch (e) {
         msg.reply("You're not in a voice channel!");
       }
     }
     if (msg.content == '!pause') {
-      serverBotInfo.set('audioReceiving', false);
-      msg.reply("It's paused!");
+      if (serverBotInfo.get('voiceChannel') != null) {
+        serverBotInfo.set('audioReceiving', false);
+        msg.reply("I'm not listening anymore!");
+      } else {
+        msg.reply("I'm not in a voice channel!")
+      }
     }
     if (msg.content == "!resume") {
-      serverBotInfo.set('audioReceiving', true);
-      msg.reply("I'm listening again!");
+      if (serverBotInfo.get('voiceChannel') != null) {
+        serverBotInfo.set('audioReceiving', true);
+        msg.reply("I'm listening again!");
+      } else {
+        msg.reply("I'm not in a voice channel!");
+      }
     }
     if (msg.content == '!leave') {
       try {
@@ -114,6 +164,64 @@ client.on('message', async (msg) => {
     msg.reply('Bro... an error has occurred!');
   }
 });
+
+// https://nodejs.dev/learn/making-http-requests-with-nodejs
+function getWITAIAppList(appList) {
+  const options = {
+    hostname: 'api.wit.ai',
+    port: 443,
+    path: '/apps?offset=0&limit=10',
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + config.WITAI_KEYS[0],
+      'Content-Type': 'application/json'
+    }
+  }
+  const req = https.request(options, (response) => {
+    let data = '';
+    response.on('data', (chunk) => {
+      data = data + chunk;
+    });
+    response.on('end', () => {
+      content = JSON.parse(data);
+      if (serverBotInfo.get('sttLang') == null) { serverBotInfo.set('sttLang', content[0].lang) }
+      appList(content);
+    });
+  });
+  req.on('error', error => {
+    console.error(error);
+    appList(null);
+  })
+  req.end();
+}
+function updateWITAIAppLanguage(appID, appKey, appLang, appData) {
+  const options = {
+    hostname: 'api.wit.ai',
+    port: 443,
+    path: '/apps/' + appID,
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + appKey,
+      'Content-Type': 'application/json'
+    }
+  }
+  const data = JSON.stringify({'lang': appLang});
+  const req = https.request(options, (response) => {
+    let data = '';
+    response.on('data', (chunk) => {
+      data = data + chunk;
+    });
+    response.on('end', () => {
+      appData(JSON.parse(data));
+    });
+  });
+  req.on('error', error => {
+    console.error(error);
+    appData(null);
+  })
+  req.write(data);
+  req.end();
+}
 
 async function connect(msg) {
   let voiceChannel = await client.channels.fetch(msg.member.voice.channelID);
@@ -186,6 +294,7 @@ async function convertAudio(buffer) {
 // https://github.com/wit-ai/pywit
 const config = {
   "DISCORD_TOKEN": process.env.DISCORD_TOKEN,
+  "WITAI_ID": process.env.WITAI_ID,
   "WITAI_TOKENS": [process.env.WITAI_TOKEN_1, process.env.WITAI_TOKEN_2, process.env.WITAI_TOKEN_3,
                     process.env.WITAI_TOKEN_4, process.env.WITAI_TOKEN_5, process.env.WITAI_TOKEN_6,
                     process.env.WITAI_TOKEN_7, process.env.WITAI_TOKEN_8, process.env.WITAI_TOKEN_9,
