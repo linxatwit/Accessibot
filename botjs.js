@@ -173,7 +173,7 @@ function getWITAIAppList(appList) {
     path: '/apps?offset=0&limit=10',
     method: 'GET',
     headers: {
-      'Authorization': 'Bearer ' + config.WITAI_KEYS[0],
+      'Authorization': 'Bearer ' + config.WITAI_TOKENS[0],
       'Content-Type': 'application/json'
     }
   }
