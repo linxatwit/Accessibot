@@ -14,6 +14,16 @@ const Util = require('util');
 const { Readable } = require('stream');
 const https = require('https');
 
+// https://www.npmjs.com/package/jimp
+// https://github.com/libgdx/libgdx/wiki/Hiero -> convert TTF fonts to BMFont 
+// https://github.com/Exploit1337/jimp-discordjs
+// https://github.com/oliver-moran/jimp/tree/master/packages/jimp
+const Jimp = require('jimp')
+const Canvas = require('canvas')
+
+const fs = require('fs');
+
+
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -27,6 +37,7 @@ client.on('ready', () => {
 // So if you connect to a voice channel on one server, and type !leave on another, it will leave on the first server AHAHAH
 var serverBotInfo = new Map();
 const sttLanguages = ['ar','bn','my','ca','zh','nl','en','fi','fr','de','hi','id','it','ja','kn','ko','ms','ml','mr','pl','pt','ru','si','es','sv','tl','ta','te','th','tr','ur','vi'];
+serverBotInfo.set('dyslexicChannels', [])
 
 client.on('message', async (msg) => {
   try {
@@ -86,8 +97,107 @@ client.on('message', async (msg) => {
     }
 
     if (msg.content == '!help') {
-      msg.reply('\n**!text** - list of #text-channel clickable buttons that will move you to that channel\n**!voice** - list of #voice-channel clickable buttons that will move you to that channel\n\n**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
+      msg.reply('\n**!dyslexic**\n    **on** - turns on open-dyslexic font for a text channel\n   **off** - turns off open-dyslexic font for a text channel\n\n**!text** - list of #text-channel clickable buttons that will move you to that channel\n**!voice** - list of #voice-channel clickable buttons that will move you to that channel\n\n**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
     }
+
+
+
+    if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name) && !msg.content.startsWith('!')) {
+      if (msg.author.bot) {
+        return;
+      }
+      // Splits up message to digestable lengths to write on an image
+      let messageWords = msg.content.replace('!font', '').trim().split(' ')
+      let messageArr = [];
+      var messageString = "";
+      for (let i = 0; i < messageWords.length; i++) {
+          if (messageWords.length <= 1) {
+            messageString += messageWords[0];
+            messageArr.push(messageString);
+            break;
+          } else if (i < messageWords.length - 1) {
+            if (messageString.length + (messageWords[i+1]).length >= 35) {
+              messageArr.push(messageString)
+              messageString = "";
+            }
+            messageString += messageWords[i] + ' ';
+          } else {
+            if (messageString.length + messageWords[messageWords.length-1].length >= 35) {
+              messageArr.push(messageString);
+              messageArr.push(messageWords[messageWords.length-1]);
+            } else {
+              messageString += messageWords[messageWords.length-1];
+              messageArr.push(messageString);
+            }
+          }          
+      }
+      // messageArr.forEach(word => console.log(word))
+      
+      const avatarOffset = 40;
+      const avatarSize =  100;
+
+      // text image, display ratio is a mystery, zoinks
+      let image = new Jimp(1000, 132 + (messageArr.length*50), '#36393f', (err, image) => {
+        if (err) throw err;
+      })
+      await Jimp.loadFont('./fonts/opendyslexic-regular.fnt').then(font => {
+        image.print(font, avatarSize + avatarOffset*2, 32, msg.author.username);
+        for (let i = 0; i < messageArr.length; i++) {
+          image.print(font, avatarSize + avatarOffset*2, 32 + (i+1)*50, messageArr[i]);
+        }
+        return image;
+      }).then(image => {
+        let file = `message.${image.getExtension()}`
+        return image.writeAsync(file) 
+      })
+
+      // https://discordjs.guide/popular-topics/canvas.html#basic-image-loading
+      const canvas = await Canvas.createCanvas(1000, 132 + (messageArr.length*50));
+      const context = canvas.getContext('2d');
+
+      const background = await Canvas.loadImage(`./message.${image.getExtension()}`);
+      // draw and stretch background image to canvas
+      context.drawImage(background, 0, 0, canvas.width, canvas.height);
+      // set color of stroke
+      context.strokeStyle = `#74037b`;
+      
+      // circular avatar region
+      context.beginPath();
+      // (x y)center radius startAngle endAngle antiClockwise?
+      context.arc(avatarOffset + avatarSize/2, avatarOffset + avatarSize/2, avatarSize/2, 0, Math.PI * 2, true);
+      context.closePath();
+      context.clip();
+      const avatar = await Canvas.loadImage(msg.author.displayAvatarURL({format: `jpg`}));
+      // draw image to topleft x, y, width height
+      context.drawImage(avatar, avatarOffset, avatarOffset, avatarSize, avatarSize);
+
+      const attachment = new Discord.MessageAttachment(canvas.toBuffer(), `message-image.png`);
+      msg.channel.send(attachment);
+      // delete image
+      fs.unlink(`message.${image.getExtension()}`, (err) => {
+        if (err) throw err
+        console.log(`message.${image.getExtension()} was deleted.`)
+      });
+    }
+
+    if (msg.content.startsWith('!dyslexic on')) {
+      if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name)) {
+        msg.reply('Open-Dyslexic Font is already enabled for ' + msg.channel.name + "!");
+      } else {
+        msg.reply('Open-Dyslexic Font has been enabled for ' + msg.channel.name);
+        serverBotInfo.get('dyslexicChannels').push(msg.channel.name);
+      }
+    }
+
+    if (msg.content.startsWith('!dyslexic off')) {
+      if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name)) {
+        msg.reply('Open-Dyslexic Font has been disabled for ' + msg.channel.name);
+        serverBotInfo.get('dyslexicChannels').pop(msg.channel.name);
+      } else {
+        msg.reply('Open-Dyslexic Font is not enabled for ' + msg.channel.name + "!");
+      }
+    }
+
 
     // https://discordjs.guide/popular-topics/permissions.html#roles-as-bot-permissions
     // https://discord.js.org/#/docs/main/stable/class/GuildChannelManager
