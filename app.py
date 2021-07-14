@@ -7,8 +7,8 @@ app = Flask(__name__)
 # gmail configurations
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'accessibotdiscord@gmail.com'
-app.config['MAIL_PASSWORD'] = 'seniorproject2021'
+app.config['MAIL_USERNAME'] = 'xxx'
+app.config['MAIL_PASSWORD'] = 'xxx'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -63,6 +63,7 @@ def feedback():
     """.format(inputs['discordTag'], inputs['description'])
 
     mail.send(msg)
+    flash('Thank you for your feedback', 'success')
     return render_template('feedback.html')
 
   return render_template('feedback.html')
@@ -76,6 +77,7 @@ def page_not_found(e):
 	return render_template("500.html"), 500
 
 if __name__ == '__main__':
+  app.secret_key = 'secret keyyyy'
   app.config['ENV'] = 'dev'  
   app.config['DEBUG'] = True
   app.run(threaded=True# Starts the site
