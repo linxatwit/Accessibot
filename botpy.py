@@ -17,6 +17,7 @@ async def on_ready():
 
 serverBotInfo = dict()
 serverBotInfo["slow"] = "False"
+serverBotInfo["pitch"] = 1.0
 @client.event
 async def on_message(message):
   try:
