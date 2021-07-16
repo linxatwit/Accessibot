@@ -17,6 +17,7 @@ async def on_ready():
 
 serverBotInfo = dict()
 serverBotInfo["slow"] = "False"
+sererBotInfo["pitch"] = 1
 @client.event
 async def on_message(message):
   try:
@@ -59,7 +60,7 @@ async def on_message(message):
         elif botChoice == 'scissors':
           await message.reply("Accessibot plays :scissors:. It's a tie, copying a bot eh? Are you a bot?")
       else:
-        await message.reply("Yo, its !rps rock, !rps paper, or !rps scissors? Get with the program. Get it? Program? I'm a robo t beep ha beep ha!")
+        await message.reply("Yo, its !rps rock, !rps paper, or !rps scissors? Get with the program. Get it? Program? I'm a robot beep ha beep ha!")
 
     if serverBotInfo.get("tts_text_channel") != None and serverBotInfo.get("tts_text_channel") == message.channel.name and not message.content.startswith(','):
       # bot hasn't joined any voice channels and you haven't joined any either
@@ -85,6 +86,7 @@ async def on_message(message):
         else:
           tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=serverBotInfo.get("slow"))
         tts.save("input.mp3")
+        os.system("ffmpeg-i input.mp3 -af asetrate=44100*0.9, aresample=44100, atempo=1/0.9 input.mp3")
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
         # The audio stream can be Opus encoded or not, however if the audio stream is not Opus encoded then the audio format must be 16-bit 48KHz stereo PCM.
@@ -100,7 +102,7 @@ async def on_message(message):
             await asyncio.sleep(1)
         
         # remove mp3 file
-        os.remove("input.mp3")
+        os.remove("output.mp3")
         # os.remove("output.pcm")
               
     if message.content.startswith(",tts on"):
@@ -126,6 +128,13 @@ async def on_message(message):
     if message.content.startswith(",acc"):
       serverBotInfo["accent"] = message.content.split(" ")[1]
       await message.reply("I have set the speaker accent to " + serverBotInfo.get("accent") + "!")
+
+    if message.content.startswith(",pitch"):
+      if message.content.split(" ")[1] == "raise":
+        serverBotInfo["pitch"] = 1.25
+      elif message.content.split(" ")[1] == "lower":
+        serverBotInfo["pitch"] = .25
+      await message.reply("I have raised the pitch of the voice!")
 
     if message.content.startswith(",slow"):
       if message.content.split(" ")[1] == "on":
