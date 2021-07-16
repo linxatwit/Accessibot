@@ -127,6 +127,16 @@ async def on_message(message):
       serverBotInfo["accent"] = message.content.split(" ")[1]
       await message.reply("I have set the speaker accent to " + serverBotInfo.get("accent") + "!")
 
+    if message.content.startswith(",pitch"):
+      if message.content.split(" ")[1] == "raise":
+        serverBotInfo["pitch"] = 1.25
+        await message.reply("I have raised the pitch of the voice!")
+      elif message.content.split(" ")[1] == "lower":
+        serverBotInfo["pitch"] = .25
+        await message.reply("I have lowered the pitch of the voice!")
+      else:
+        await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
+
     if message.content.startswith(",slow"):
       if message.content.split(" ")[1] == "on":
         serverBotInfo["slow"] = "True"
