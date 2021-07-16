@@ -86,8 +86,6 @@ async def on_message(message):
         else:
           tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=serverBotInfo.get("slow"))
         tts.save("input.mp3")
-        ffmpegPitch = "ffmpeg-i input.mp3 -af asetrate=44100*" + serverBotInfo.get("pitch") + ", aresample=44100, atempo=1/0.9 input.mp3"
-        os.system(ffmpegPitch)
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
         # The audio stream can be Opus encoded or not, however if the audio stream is not Opus encoded then the audio format must be 16-bit 48KHz stereo PCM.
@@ -97,7 +95,8 @@ async def on_message(message):
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          voiceConnection.play(discord.FFmpegPCMAudio('./input.mp3'))
+          ffmpegPitch = "-af asetrate=44100*" + serverBotInfo.get("pitch") + ", aresample=44100, atempo=1/0.9 input.mp3"
+          voiceConnection.play(discord.FFmpegPCMAudio('./input.mp3', options=fmpegPitch))
           # wait until finish playing to delete
           while voiceConnection.is_playing():
             await asyncio.sleep(1)
