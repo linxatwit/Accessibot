@@ -86,7 +86,8 @@ async def on_message(message):
         else:
           tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=serverBotInfo.get("slow"))
         tts.save("input.mp3")
-        os.system("ffmpeg-i input.mp3 -af asetrate=44100*" + serverBotInfo.get("pitch") + ", aresample=44100, atempo=1/0.9 input.mp3")
+        ffmpegPitch = "ffmpeg-i input.mp3 -af asetrate=44100*" + serverBotInfo.get("pitch") + ", aresample=44100, atempo=1/0.9 input.mp3"
+        os.system(ffmpegPitch)
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
         # The audio stream can be Opus encoded or not, however if the audio stream is not Opus encoded then the audio format must be 16-bit 48KHz stereo PCM.
@@ -132,11 +133,12 @@ async def on_message(message):
     if message.content.startswith(",pitch"):
       if message.content.split(" ")[1] == "raise":
         serverBotInfo["pitch"] = 1.25
+        await message.reply("I have raised the pitch of the voice!")
       elif message.content.split(" ")[1] == "lower":
         serverBotInfo["pitch"] = .25
+        await message.reply("I have lowered the pitch of the voice!")
       else:
         await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
-      await message.reply("I have raised the pitch of the voice!")
 
     if message.content.startswith(",slow"):
       if message.content.split(" ")[1] == "on":
