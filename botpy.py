@@ -17,7 +17,6 @@ async def on_ready():
 
 serverBotInfo = dict()
 serverBotInfo["slow"] = "False"
-sererBotInfo["pitch"] = 1
 @client.event
 async def on_message(message):
   try:
@@ -60,7 +59,7 @@ async def on_message(message):
         elif botChoice == 'scissors':
           await message.reply("Accessibot plays :scissors:. It's a tie, copying a bot eh? Are you a bot?")
       else:
-        await message.reply("Yo, its !rps rock, !rps paper, or !rps scissors? Get with the program. Get it? Program? I'm a robot beep ha beep ha!")
+        await message.reply("Yo, its !rps rock, !rps paper, or !rps scissors? Get with the program. Get it? Program? I'm a robo t beep ha beep ha!")
 
     if serverBotInfo.get("tts_text_channel") != None and serverBotInfo.get("tts_text_channel") == message.channel.name and not message.content.startswith(','):
       # bot hasn't joined any voice channels and you haven't joined any either
@@ -95,7 +94,6 @@ async def on_message(message):
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          # ffmpegPitch = "\"-af asetrate=44100*" + serverBotInfo.get("pitch") + ", aresample=44100, atempo=1/0.9\""
           voiceConnection.play(discord.FFmpegPCMAudio('./input.mp3'))
           # wait until finish playing to delete
           while voiceConnection.is_playing():
@@ -103,7 +101,7 @@ async def on_message(message):
         
         # remove mp3 file
         os.remove("input.mp3")
-        # os.remove("input.pcm")
+        # os.remove("output.pcm")
               
     if message.content.startswith(",tts on"):
       serverBotInfo["tts_text_channel"] = message.channel.name
@@ -128,16 +126,6 @@ async def on_message(message):
     if message.content.startswith(",acc"):
       serverBotInfo["accent"] = message.content.split(" ")[1]
       await message.reply("I have set the speaker accent to " + serverBotInfo.get("accent") + "!")
-
-    if message.content.startswith(",pitch"):
-      if message.content.split(" ")[1] == "raise":
-        serverBotInfo["pitch"] = 1.25
-        await message.reply("I have raised the pitch of the voice!")
-      elif message.content.split(" ")[1] == "lower":
-        serverBotInfo["pitch"] = .25
-        await message.reply("I have lowered the pitch of the voice!")
-      else:
-        await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
 
     if message.content.startswith(",slow"):
       if message.content.split(" ")[1] == "on":
