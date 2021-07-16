@@ -103,7 +103,7 @@ async def on_message(message):
         
         # remove mp3 file
         os.remove("input.mp3")
-        # os.remove("output.pcm")
+        # os.remove("input.pcm")
               
     if message.content.startswith(",tts on"):
       serverBotInfo["tts_text_channel"] = message.channel.name
