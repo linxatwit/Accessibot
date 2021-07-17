@@ -95,7 +95,7 @@ async def on_message(message):
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          pitchOptions = "-af asetrate=" + str(48000*float(serverBotInfo.get("pitch"))) + ",atempo=1,aresample=44100"
+          pitchOptions = "-af asetrate=" + str(44100*float(serverBotInfo.get("pitch"))) + ",atempo=1,aresample=44100"
           voiceConnection.play(discord.FFmpegPCMAudio(source = './input.mp3', options = pitchOptions))
           # wait until finish playing to delete
           while voiceConnection.is_playing():
@@ -131,10 +131,10 @@ async def on_message(message):
 
     if message.content.startswith(",pitch"):
       if message.content.split(" ")[1] == "raise":
-        serverBotInfo["pitch"] = serverBotInfo.get("pitch") + (serverBotInfo.get("pitch") * 1.25)
+        serverBotInfo["pitch"] = serverBotInfo.get("pitch") * 1.1
         await message.reply("I have raised the pitch of the voice!")
       elif message.content.split(" ")[1] == "lower":
-        serverBotInfo["pitch"] = serverBotInfo.get("pitch") - (serverBotInfo.get("pitch") * 0.25)
+        serverBotInfo["pitch"] = serverBotInfo.get("pitch") * .9
         await message.reply("I have lowered the pitch of the voice!")
       else:
         await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
