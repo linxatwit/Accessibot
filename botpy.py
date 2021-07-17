@@ -96,7 +96,7 @@ async def on_message(message):
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
           # pitchOptions = "-af \" asetrate=44100*" + serverBotInfo.get("pitch") + ",atempo=1.5,aresample=44100\""
-          voiceConnection.play(discord.FFmpegPCMAudio(source = './input.mp3', options = '-i asetrate=44100*0.5 -i'))
+          voiceConnection.play(discord.FFmpegPCMAudio(source = './input.mp3', options = '-i asetrate=44100*0.5'))
           # wait until finish playing to delete
           while voiceConnection.is_playing():
             await asyncio.sleep(1)
