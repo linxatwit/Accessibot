@@ -16,8 +16,9 @@ async def on_ready():
 
 
 serverBotInfo = dict()
-serverBotInfo["slow"] = "False"
+serverBotInfo["speed"] = 1.0
 serverBotInfo["pitch"] = 1.0
+serverBotInfo["accent"] = "en"
 @client.event
 async def on_message(message):
   try:
@@ -81,10 +82,7 @@ async def on_message(message):
           voiceConnection = message.author.guild.voice_client
 
         # convert text to mp3 file
-        if serverBotInfo.get("accent") == None:
-          tts = gTTS(message.content, lang='en', slow=serverBotInfo.get("slow"))
-        else:
-          tts = gTTS(message.content, lang=serverBotInfo.get("accent"), slow=serverBotInfo.get("slow"))
+        tts = gTTS(message.content, lang=serverBotInfo.get("accent"))
         tts.save("input.mp3")
         # ffmpeg convert mp3 file to PCM signed 16-bit little-endian samples mono channel 48000hz
         # https://discordpy.readthedocs.io/en/stable/api.html#discord.AudioSource
@@ -95,7 +93,7 @@ async def on_message(message):
         # https://www.ffmpeg.org/download.html -> Windows Build by BtbN -> ffmpeg-n4.4-72-g91aa49218e-win64-gpl-4.4.zip -> bin -> copy exe files to directory
         # use exe file shown below with file path + mp3 source
         if not voiceConnection.is_playing():
-          pitchOptions = "-af asetrate=" + str(44100*float(serverBotInfo.get("pitch"))) + ",atempo=1,aresample=44100"
+          pitchOptions = "-af asetrate=" + str(44100*float(serverBotInfo.get("pitch"))) + ",atempo=" + str(serverBotInfo.get("speed")) + ",aresample=44100"
           voiceConnection.play(discord.FFmpegPCMAudio(source = './input.mp3', options = pitchOptions))
           # wait until finish playing to delete
           while voiceConnection.is_playing():
@@ -134,18 +132,20 @@ async def on_message(message):
         serverBotInfo["pitch"] = serverBotInfo.get("pitch") * 1.1
         await message.reply("I have raised the pitch of the voice!")
       elif message.content.split(" ")[1] == "lower":
-        serverBotInfo["pitch"] = serverBotInfo.get("pitch") * .9
+        serverBotInfo["pitch"] = serverBotInfo.get("pitch") * 0.9
         await message.reply("I have lowered the pitch of the voice!")
       else:
         await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
 
-    if message.content.startswith(",slow"):
-      if message.content.split(" ")[1] == "on":
-        serverBotInfo["slow"] = "True"
-        await message.reply("I have set slower speaker mode to true!")
+    if message.content.startswith(",speed increase"):
+      if message.content.split(" ")[1] == "increase":
+        serverBotInfo["speed"] = serverBotInfo.get("speed")*1.1
+        await message.reply("I have increased the speaking speed!")
+      elif message.content.split(" ")[1] == "decrease":
+        serverBotInfo["speed"] = serverBotInfo.get("speed")*0.9
+        await message.reply("I have decreased the speeking speed!")
       else:
-        serverBotInfo["slow"] = "False"
-        await message.reply("I have set slower speaker mode to false!")
+        await message.reply("Sorry I don't understand, command usage is \",speed {increase  | decrease}\"")
 
   except Exception as e:
     print("message Error: ", e)
