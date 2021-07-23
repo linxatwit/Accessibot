@@ -202,25 +202,23 @@ client.on('message', async (msg) => {
 
     // https://discordjs.guide/popular-topics/permissions.html#roles-as-bot-permissions
     // https://discord.js.org/#/docs/main/stable/class/GuildChannelManager
-    if (msg.content == '!text') {
+    if (msg.content == '!channels') {
       let textChannelList = []
       msg.guild.channels.cache.forEach(channel => {
         if (channel.type == 'text') {
           textChannelList.push('<#' + channel.id + '>');
         }
       });
-      msg.reply('Click any #text-channel to the right to move to it! ' + textChannelList.join(' '));
-    }
-
-    if (msg.content == '!voice') {
       let voiceChannelList = []
       msg.guild.channels.cache.forEach(channel => {
         if (channel.type == 'voice') {
           voiceChannelList.push('<#' + channel.id + '>');
         }
       });
-      msg.reply('Click any #voice-channel to the right to move to it!' + voiceChannelList.join(' '));
+
+      msg.reply('Click any #text-channel!\n' + textChannelList.join(' ') + '\nClick any #voice-channel!' + voiceChannelList.join(' '));
     }
+
 
 
     // https://nodejs.dev/learn/making-http-requests-with-nodejs
