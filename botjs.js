@@ -216,7 +216,7 @@ client.on('message', async (msg) => {
         }
       });
 
-      msg.reply('Click any #text-channel!\n' + textChannelList.join(' ') + '\nClick any #voice-channel!' + voiceChannelList.join(' '));
+      msg.reply('Click any #text-channel!' + textChannelList.join(' ') + '\nClick any #voice-channel!' + voiceChannelList.join(' '));
     }
 
 
