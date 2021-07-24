@@ -141,7 +141,7 @@ async def on_message(message):
       if message.content.split(" ")[1] == "increase":
         serverBotInfo["speed"] = serverBotInfo.get("speed")*1.1
         await message.reply("I have increased the speaking speed!")
-      elif message.content.split(" ")[1] == ",decrease":
+      elif message.content.split(" ")[1] == "decrease":
         serverBotInfo["speed"] = serverBotInfo.get("speed")*0.9
         await message.reply("I have decreased the speeking speed!")
       else:
