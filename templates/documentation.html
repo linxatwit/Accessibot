@@ -28,38 +28,53 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-<main role="main" class="container-fluid" style="float: left; width: 100%; display: block">
+<main role="main" class="container-fluid" style="width: 100%; display: block">
   <div class="bodywrapper" style="margin: 40px auto 0 auto; max-width: 700px">
     <div class="section">
       <div class="section">
         <h1 style="font-weight: bold; letter-spacing: 0rem;">Accessibot Changelog</h1>
         <p>Here you can see the list of additions and changes for Accessibot.</p>
       </div>
-      <div class="section">
+      <div class="section" style="margin-bottom: 10%">
+        <h2>Version 0.0.8</h2>
+        <p>Released July 17, 2021</p>
+        <ul class="nested">
+          <li>Updated speed adjuster for the bot</li>
+          <li>Finalized commands page on the website with all the commands we have so far</li>
+        </ul>
+        <h2>Version 0.0.7</h2>
+        <p>Released July 17, 2021</p>
+        <ul class="nested">
+          <li>Added pitch adjustments to the bot</li>
+        </ul>
+        <h2>Version 0.0.6</h2>
+        <p>Released July 10, 2021</p>
+        <ul class="nested">
+          <li>Updated language support for Speech-To-Text</li>
+        </ul>
+        <h2>Version 0.0.5</h2>
+        <p>Released July 5, 2021</p>
+        <ul class="nested">
+          <li>Implemented custom fonts with OpenDyslexic to help users with Dyslexia</li>
+        </ul>
         <h2>Version 0.0.4</h2>
         <p>Released June 30, 2021</p>
-        <ul>
+        <ul class="nested">
           <li>Can slow down speaker's speech pace for the bot </li>
         </ul>
-      </div>
-      <div class="section">
         <h2>Version 0.0.3</h2>
         <p>Released June 25, 2021</p>
-        <ul>
-          <li>Added speaker accents to the bot</li>
+        <ul class="nested">
+          <li>Added speaker accents for the bot</li>
         </ul>
-      </div>
-      <div class="section">
         <h2>Version 0.0.2</h2>
         <p>Released June 24, 2021</p>
-        <ul>
-          <li>Text-To-Speech is working</li>
+        <ul class="nested"> 
+          <li>Text-To-Speech and Speech-To-Text is working</li>
         </ul>
-      </div>
-      <div class="section">
         <h2>Version 0.0.1</h2>
         <p>Released May 28, 2021</p>
-        <ul>
+        <ul class="nested">
           <li>Bot basic functionalities created</li>
           <li>Website with feedback capabilities and changelog created</li>
         </ul>
@@ -69,12 +84,3 @@
 </main>
 
 {% endblock %}
-
-<script>
-$(function() {
-  $(".nav li").on("click", function() {
-    $(".nav li").removeClass("active");
-    $(this).addClass("active");
-  });
-});
-</script>

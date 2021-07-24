@@ -34,12 +34,16 @@
       <h1 style="font-weight: bold; letter-spacing: 0rem;">Commands</h1>
       <p>List of commands for Accessibot.</p>
     </div>
-    <div class="section">
+    <div class="section" style="margin-bottom: 10%;">
+      <p style="font-weight: bold;"><u>General</u></p>
       <ul>
         <li style="font-weight: bold;">,help</li>
         <ul class="nested">
           <li>Displays a list of commands for the bot.</li>
         </ul>
+      </ul>
+      <p style="font-weight: bold;"><u>Text-To-Speech</u></p>
+      <ul>
         <li style="font-weight: bold;">,tts on</li>
         <ul class="nested">
           <li>Join a voice channel and type this command in a text channel to enable tts in it.</li>
@@ -64,7 +68,61 @@
         </ul>
         <li style="font-weight: bold;">,speed decrease</li>
         <ul class="nested">
-          <li>Speaker for the bot speaks slower</li>
+          <li>Speaker for the bot speaks slower.</li>
+        </ul>
+        <li style="font-weight: bold;">,pitch increase</li>
+        <ul class="nested">
+          <li>Speaker for the bot speaks at a higher pitch.</li>
+        </ul>
+        <li style="font-weight: bold;">,pitch decrease</li>
+        <ul class="nested">
+          <li>Speaker for the bot speaks at a lower pitch.</li>
+        </ul>
+      </ul>
+      <p style="font-weight: bold;"><u>Speech-To-Text</u></p>
+      <ul>
+        <li style="font-weight: bold;">,stt on</li>
+        <ul class="nested">
+          <li>Joins the voice channel you are connected to.</li>
+        </ul>
+        <li style="font-weight: bold;">,stt pause</li>
+        <ul class="nested">
+          <li>While in a voice channel, stops listening.</li>
+        </ul>
+        <li style="font-weight: bold;">,stt resume</li>
+        <ul class="nested">
+          <li>While in a voice channel, resumes listening.</li>
+        </ul>
+        <li style="font-weight: bold;">,stt off</li>
+        <ul class="nested">
+          <li>Leaves current voice channel if in one.</li>
+        </ul>
+        <li style="font-weight: bold;">,lang list</li>
+        <ul class="nested">
+          <li>List of languages supported for STT.</li>
+          <li>Current language support for: Arabic (ar), Bengali (bn), Burmese (my), Catalan (ca), Chinese (zh), Dutch (nl), English (en), Finnish (fi), French (fr), German (de), Hindi (hi), Indonesian (id), Italian(it), Japanese (ja), Kannada (kn), Korean (ko), Malay (ms), Malayalam (ml), Marathi (mr), Polish (pl), Portuguese (pt), Russian (ru), Sinhalese (si), Spanish (es), Swedish (sv), Tagalog (tl), Tamil (ta), Telugu (te), Thai (th), Turkish (tr), Urdu (ur), Vietnamese (vi)</li>
+        </ul>
+        <li style="font-weight: bold;">,lang {language code}</li>
+        <ul class="nested">
+          <li>See ,lang list for available codes.</li>
+        </ul>
+      </ul>
+      <p style="font-weight: bold;"><u>Custom Fonts</u></p>
+      <ul>
+        <li style="font-weight: bold;">,dyslexic on</li>
+        <ul class="nested">
+          <li>Any message typed in this text channel will be converted into OpenDyslexic font.</li>
+        </ul>
+        <li style="font-weight: bold;">,dyslexic off</li>
+        <ul class="nested">
+          <li>Disables text to custom font conversion.</li>
+        </ul>
+      </ul>
+      <p style="font-weight: bold;"><u>Channel Navigation</u></p>
+      <ul>
+        <li style="font-weight: bold;">,channels</li>
+        <ul class="nested">
+          <li>Bot will reply with clickable button links to other text and voice channels that the user can click on to move to.</li>
         </ul>
       </ul>
     </div>
@@ -72,12 +130,3 @@
 </main>
 
 {% endblock %}
-
-<script>
-$(function() {
-  $(".nav li").on("click", function() {
-    $(".nav li").removeClass("active");
-    $(this).addClass("active");
-  });
-});
-</script>
