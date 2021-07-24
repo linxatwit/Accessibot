@@ -13,12 +13,13 @@ app = Flask(__name__)
 # app.config['MAIL_USE_SSL'] = True
 
 app.config.update(dict(
-    MAIL_SERVER = 'smtp.gmail.com',
-    MAIL_PORT = 465,
-    MAIL_USE_TLS = False,
-    MAIL_USE_SSL = True,
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME'),
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD'),
+  SECRET_KEY = os.getenv('SECRET_KEY'),
+  MAIL_SERVER = 'smtp.gmail.com',
+  MAIL_PORT = 465,
+  MAIL_USE_TLS = False,
+  MAIL_USE_SSL = True,
+  MAIL_USERNAME = os.getenv('MAIL_USERNAME'),
+  MAIL_PASSWORD = os.getenv('MAIL_PASSWORD'),
 ))
 
 mail = Mail(app)
@@ -86,7 +87,6 @@ def page_not_found(e):
 	return render_template("500.html"), 500
 
 if __name__ == '__main__':
-  app.secret_key = 'secret keyyyy'
   app.config['ENV'] = 'dev'  
   app.config['DEBUG'] = True
   app.run(threaded=True# Starts the site
