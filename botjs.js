@@ -97,18 +97,18 @@ client.on('message', async (msg) => {
       }
     }
 
-    if (msg.content == '!help') {
-      msg.reply('\n**!dyslexic**\n    **on** - turns on open-dyslexic font for a text channel\n   **off** - turns off open-dyslexic font for a text channel\n\n**!text** - list of #text-channel clickable buttons that will move you to that channel\n**!voice** - list of #voice-channel clickable buttons that will move you to that channel\n\n**Speech-to-Text (STT)**\n**!join** - Joins the voice channel you are connected to\n**!pause** - While in a voice channel, stops listening\n**!resume** - While in a voice channel, resumes listening\n**!leave** - Leaves current voice channel if in one\n**!lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See !lang list for available codes');
+    if (msg.content == ',help') {
+      msg.reply('\n**,dyslexic**\n    **on** - turns on open-dyslexic font for a text channel\n   **off** - turns off open-dyslexic font for a text channel\n\n**,channels** - list of #text-channel and #voice-channel clickable buttons that will move you to that channel\n\n**Speech-to-Text (STT)**\n**,stt on** - Joins the voice channel you are connected to\n**,stt pause** - While in a voice channel, stops listening\n**,stt resume** - While in a voice channel, resumes listening\n**,stt off** - Leaves current voice channel if in one\n**,stt ,lang**\n   **list** - List of languages supported for STT\n   **current** - Current server STT language setting\n   **[2-letter language code]** - See ,lang list for available codes');
     }
 
 
 
-    if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name) && !msg.content.startsWith('!')) {
+    if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name) && !msg.content.startsWith(',')) {
       if (msg.author.bot) {
         return;
       }
       // Splits up message to digestable lengths to write on an image
-      let messageWords = msg.content.replace('!font', '').trim().split(' ')
+      let messageWords = msg.content.replace(',font', '').trim().split(' ')
       let messageArr = [];
       var messageString = "";
       for (let i = 0; i < messageWords.length; i++) {
@@ -181,7 +181,7 @@ client.on('message', async (msg) => {
       });
     }
 
-    if (msg.content.startsWith('!dyslexic on')) {
+    if (msg.content.startsWith(',dyslexic on')) {
       if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name)) {
         msg.reply('Open-Dyslexic Font is already enabled for ' + msg.channel.name + "!");
       } else {
@@ -190,7 +190,7 @@ client.on('message', async (msg) => {
       }
     }
 
-    if (msg.content.startsWith('!dyslexic off')) {
+    if (msg.content.startsWith(',dyslexic off')) {
       if (serverBotInfo.get('dyslexicChannels').includes(msg.channel.name)) {
         msg.reply('Open-Dyslexic Font has been disabled for ' + msg.channel.name);
         serverBotInfo.get('dyslexicChannels').pop(msg.channel.name);
@@ -202,7 +202,7 @@ client.on('message', async (msg) => {
 
     // https://discordjs.guide/popular-topics/permissions.html#roles-as-bot-permissions
     // https://discord.js.org/#/docs/main/stable/class/GuildChannelManager
-    if (msg.content == '!channels') {
+    if (msg.content == ',channels') {
       let textChannelList = []
       msg.guild.channels.cache.forEach(channel => {
         if (channel.type == 'text') {
@@ -225,15 +225,15 @@ client.on('message', async (msg) => {
     // https://wit.ai/docs/http/20200513/#get__apps_link
     // https://nodejs.org/api/https.html
     // https://wit.ai/faq -> langs supported for speech recognition
-    if (msg.content.startsWith('!lang')) {
+    if (msg.content.startsWith(',lang')) {
       try {
         let lang = msg.content.split(' ')[1].toLowerCase();      
 
         if (lang == 'current') {
-          msg.reply('Current STT language setting: ' + serverBotInfo.get('sttLang') + '. Type !lang list for available language codes.');
+          msg.reply('Current STT language setting: ' + serverBotInfo.get('sttLang') + '. Type ,lang list for available language codes.');
         } else if (lang == 'list' || (!sttLanguages.includes(lang) && lang != 'current')) {
           msg.reply('We currently support speech recognition for:\nArabic (ar)\nBengali (bn), Burmese (my)\nCatalan (ca), Chinese (zh)\nDutch (nl)\nEnglish (en)\nFinnish (fi), French (fr)\nGerman (de)\nHindi (hi)\nIndonesian (id), Italian(it)\nJapanese (ja)\nKannada (kn), Korean (ko)\nMalay (ms), Malayalam (ml), Marathi (mr)\nPolish (pl), Portuguese (pt)\nRussian (ru)\nSinhalese (si), Spanish (es), Swedish (sv)\nTagalog (tl), Tamil (ta), Telugu (te), Thai (th), Turkish (tr)\nUrdu (ur)\nVietnamese (vi)');
-          msg.reply('Example usage: English "!lang en", Spanish "!lang es", Korean "!lang ko"');
+          msg.reply('Example usage: English ",lang en", Spanish ",lang es", Korean ",lang ko"');
         } else {
           getWITAIAppList(appList => {
             let appMap = appList.reduce(function(map, obj) {
@@ -250,12 +250,12 @@ client.on('message', async (msg) => {
           msg.reply('Successfully STT language setting to: ' + serverBotInfo.get('sttLang'));
         }
       } catch (e) {
-        console.log("!lang Error :" + e);
+        console.log(",lang Error :" + e);
       }
     }
 
 
-    if (msg.content == '!join') {
+    if (msg.content == ',stt on') {
       try {
         serverBotInfo.set('voiceChannel', msg.member.voice.channelID);
         serverBotInfo.set('audioReceiving', true);
@@ -265,7 +265,7 @@ client.on('message', async (msg) => {
         msg.reply("You're not in a voice channel!");
       }
     }
-    if (msg.content == '!pause') {
+    if (msg.content == ',stt pause') {
       if (serverBotInfo.get('voiceChannel') != null) {
         serverBotInfo.set('audioReceiving', false);
         msg.reply("I'm not listening anymore!");
@@ -273,7 +273,7 @@ client.on('message', async (msg) => {
         msg.reply("I'm not in a voice channel!")
       }
     }
-    if (msg.content == "!resume") {
+    if (msg.content == ",stt resume") {
       if (serverBotInfo.get('voiceChannel') != null) {
         serverBotInfo.set('audioReceiving', true);
         msg.reply("I'm listening again!");
@@ -281,7 +281,7 @@ client.on('message', async (msg) => {
         msg.reply("I'm not in a voice channel!");
       }
     }
-    if (msg.content == '!leave') {
+    if (msg.content == ',stt off') {
       try {
         let voiceChannel = await client.channels.fetch(serverBotInfo.get('voiceChannel'));
         serverBotInfo.delete('voiceChannel');
