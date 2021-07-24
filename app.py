@@ -1,16 +1,25 @@
 from flask import Flask, render_template, request, flash
 from flask_mail import Mail, Message
-from os import environ
+import os
 
 app = Flask(__name__)
 
 # gmail configurations
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = environ.get('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+# app.config['MAIL_SERVER']='smtp.gmail.com'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = environ.get('MAIL_USERNAME')
+# app.config['MAIL_PASSWORD'] = environ.get('MAIL_PASSWORD')
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+
+app.config.update(dict(
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 465,
+    MAIL_USE_TLS = False,
+    MAIL_USE_SSL = True,
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME'),
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD'),
+))
 
 mail = Mail(app)
 
