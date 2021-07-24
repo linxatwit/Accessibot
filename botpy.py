@@ -137,11 +137,11 @@ async def on_message(message):
       else:
         await message.reply("Sorry I don't understand, command usage is \",pitch {raise  | lower}\"")
 
-    if message.content.startswith(",speed increase"):
+    if message.content.startswith(",speed"):
       if message.content.split(" ")[1] == "increase":
         serverBotInfo["speed"] = serverBotInfo.get("speed")*1.1
         await message.reply("I have increased the speaking speed!")
-      elif message.content.split(" ")[1] == ",speed decrease":
+      elif message.content.split(" ")[1] == ",decrease":
         serverBotInfo["speed"] = serverBotInfo.get("speed")*0.9
         await message.reply("I have decreased the speeking speed!")
       else:
