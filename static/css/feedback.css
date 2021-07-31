@@ -26,12 +26,12 @@ textarea {
 }
 
 label {
-    display: block; 
-    font-size: 18px;
+    display: block;
 }
 
 h1 {
     letter-spacing: 0.5rem;
+    font-size: 36px;
 }
 
 .btn-primary {
@@ -54,5 +54,4 @@ h1 {
 .description {
     letter-spacing: 2px;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
 }

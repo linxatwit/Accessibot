@@ -24,16 +24,29 @@
   <link rel="stylesheet" href="{{url_for('static',filename='css/flashMessages.css') }}">
   <!-- Documentation -->
   <link rel="stylesheet" href="{{url_for('static',filename='css/documentation.css') }}">
+  <link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/opendyslexic" type="text/css"/>
 
 </head>
 
-<body>
+<body id="main" style="font-size: 17px;">
   <div id="page-container">
     
       <!-- Body content -->
 
       {% block content %}{% endblock %}
 
+  </div>
+  <div style="position:fixed; bottom:5px; right:5px; z-index:1000;">
+    <button type="button" class="btn btn-light" onClick="changeFontSize('main', -1)" style="font-weight: bold">A-</button>
+    <button type="button" class="btn btn-light" onClick="changeFontSize('main', 1)" style="font-weight: bold">A+</button>
+    <div class="btn-group dropup">
+      <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" style="font-weight: bold;">Select Font
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li><button class="btn btn-light" onClick="changeFontFamily()">OpenDyslexic</button></li>
+        <li><button class="btn btn-light" onClick="changeFontFamilyDefault()" style="width: 112.38px">Default</button></li>
+      </ul>
+    </div>
   </div>
   <!-- Footer as it should be  -->
   <footer class="footer" id="footer">
@@ -46,10 +59,18 @@
 </html>
 
 <script>
-$(function() {
-  $(".nav li").on("click", function() {
-    $(".nav li").removeClass("active");
-    $(this).addClass("active");
-  });
-});
+function changeFontSize(id, increaseFactor){
+    var txt = document.getElementById(id);
+    var style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
+    var currentSize = parseFloat(style);
+    txt.style.fontSize = (currentSize + increaseFactor) + 'px';
+  }
+
+function changeFontFamily(){
+  document.getElementById("main").style.fontFamily = "OpenDyslexic3Regular";
+}
+
+function changeFontFamilyDefault(){
+  document.getElementById("main").style.fontFamily = "Helvetica Neue”,Helvetica,Arial,sans-serif";
+}
 </script>
