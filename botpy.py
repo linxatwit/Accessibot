@@ -1,7 +1,3 @@
-# pip install discord.py
-# pip install discord.py[voice]
-# pip install gtts
-
 import discord
 from gtts import gTTS
 import asyncio
@@ -151,4 +147,4 @@ async def on_message(message):
     print("message Error: ", e)
     await message.reply("Bro cmon, what is this error")
 
-client.run(os.getenv('DISCORD_TOKEN'))
+client.run('ODQ2MDU1MzAxOTAzMDI0MTk5.YKp8Zg.N7vfl8jJSSLfEbU4gIM4rn88qSM')

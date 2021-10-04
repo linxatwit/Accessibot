@@ -7,18 +7,12 @@
 // npm install util
 // npm install stream
 
-
 const Discord = require('discord.js');
 const opus = require('@discordjs/opus');
 const WitSpeech = require('node-witai-speech');
 const Util = require('util');
 const { Readable } = require('stream');
 const https = require('https');
-
-// https://www.npmjs.com/package/jimp
-// https://github.com/libgdx/libgdx/wiki/Hiero -> convert TTF fonts to BMFont 
-// https://github.com/Exploit1337/jimp-discordjs
-// https://github.com/oliver-moran/jimp/tree/master/packages/jimp
 const Jimp = require('jimp')
 const Canvas = require('canvas')
 
@@ -33,9 +27,6 @@ client.on('ready', () => {
 });
 
 // Map for storing bot information e.g. voice channel ID that I am connected to, will need to disconnect later
-// Currently should work on one server, for mutliple servers (guilds), it will probably need to map guild.id 
-//    serverBotInfo.get(guild.id).get(__) -> then the usual information e.g. current voice channel ID or serverBotInfo.get(guild.id).get('voiceChannel)
-// So if you connect to a voice channel on one server, and type !leave on another, it will leave on the first server AHAHAH
 var serverBotInfo = new Map();
 const sttLanguages = ['ar','bn','my','ca','zh','nl','en','fi','fr','de','hi','id','it','ja','kn','ko','ms','ml','mr','pl','pt','ru','si','es','sv','tl','ta','te','th','tr','ur','vi'];
 serverBotInfo.set('dyslexicChannels', [])
@@ -132,8 +123,7 @@ client.on('message', async (msg) => {
             }
           }          
       }
-      // messageArr.forEach(word => console.log(word))
-      
+
       const avatarOffset = 40;
       const avatarSize =  100;
 
@@ -152,7 +142,6 @@ client.on('message', async (msg) => {
         return image.writeAsync(file) 
       })
 
-      // https://discordjs.guide/popular-topics/canvas.html#basic-image-loading
       const canvas = await Canvas.createCanvas(1000, 132 + (messageArr.length*50));
       const context = canvas.getContext('2d');
 
@@ -199,9 +188,6 @@ client.on('message', async (msg) => {
       }
     }
 
-
-    // https://discordjs.guide/popular-topics/permissions.html#roles-as-bot-permissions
-    // https://discord.js.org/#/docs/main/stable/class/GuildChannelManager
     if (msg.content == ',channels') {
       let textChannelList = []
       msg.guild.channels.cache.forEach(channel => {
@@ -219,12 +205,6 @@ client.on('message', async (msg) => {
       msg.reply('Click any #text-channel!' + textChannelList.join(' ') + '\nClick any #voice-channel!' + voiceChannelList.join(' '));
     }
 
-
-
-    // https://nodejs.dev/learn/making-http-requests-with-nodejs
-    // https://wit.ai/docs/http/20200513/#get__apps_link
-    // https://nodejs.org/api/https.html
-    // https://wit.ai/faq -> langs supported for speech recognition
     if (msg.content.startsWith(',lang')) {
       try {
         let lang = msg.content.split(' ')[1].toLowerCase();      
@@ -297,7 +277,6 @@ client.on('message', async (msg) => {
   }
 });
 
-// https://nodejs.dev/learn/making-http-requests-with-nodejs
 function getWITAIAppList(appList) {
   const options = {
     hostname: 'api.wit.ai',
@@ -390,9 +369,6 @@ function userSpeaking(voiceConnection, msg) {
   })
 }
 
-// https://discordjs.guide/voice/receiving-audio.html
-// https://discord.js.org/#/docs/main/stable/typedef/ReceiveStreamOptions
-// https://nodejs.org/api/stream.html#stream_readable_read_size_1
 // Silence Frame -> node_modules/discord.js/src/client/voice/util/Silence.js
 // By default, audio stream is undefined/ empty, so we need to play something
 const SILENCE_FRAME = Buffer.from([0xf8, 0xff, 0xfe]);
@@ -403,8 +379,6 @@ class Silence extends Readable {
   }
 }
 
-// https://stackoverflow.com/questions/4714542/pcm-wave-file-stereo-to-mono#4715502
-// https://researchaholic.com/2013/08/01/split-a-pcm-stereo-into-multiple-mono-files-by-channel/
 // Converts 16 bit signed PCM formatted wav file from stereo to mono
 async function convertAudio(buffer) {
   try {
@@ -421,9 +395,7 @@ async function convertAudio(buffer) {
   }
 }
 
-// https://www.npmjs.com/package/node-witai-speech
-// https://wit.ai/docs/
-// https://github.com/wit-ai/pywit
+
 const config = {
   "DISCORD_TOKEN": process.env.DISCORD_TOKEN,
   "WITAI_ID": process.env.WITAI_ID,
