@@ -147,4 +147,4 @@ async def on_message(message):
     print("message Error: ", e)
     await message.reply("Bro cmon, what is this error")
 
-client.run('ODQ2MDU1MzAxOTAzMDI0MTk5.YKp8Zg.N7vfl8jJSSLfEbU4gIM4rn88qSM')
+client.run(os.getenv('DISCORD_TOKEN'))
